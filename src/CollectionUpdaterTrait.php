@@ -17,6 +17,7 @@ trait CollectionUpdaterTrait
      * @param array         $input             Array of comparators for e.g. id's
      * @param callable      $extractComparator A callback to extract comparator from Element
      * @param callable      $createElement     A callback to create new element for Collection
+     * @param callable|null $removeElement     A callback to remove an element for Collection
      *
      * @return Collection
      */
@@ -24,7 +25,8 @@ trait CollectionUpdaterTrait
         Collection $collection,
         array $input,
         callable $extractComparator,
-        callable $createElement
+        callable $createElement,
+        callable $removeElement = null
     ): Collection {
         $existingElements = [];
 
@@ -44,6 +46,10 @@ trait CollectionUpdaterTrait
 
         foreach ($existingElements as $key => $element) {
             $collection->removeElement($element);
+
+            if (null !== $removeElement) {
+                $removeElement($element);
+            }
         }
 
         return $collection;
